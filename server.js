@@ -59,54 +59,36 @@ MongoClient.connect(mongodb_url, (err, client) => {
 
   // DELETE /posts/:postId
   app.delete('/posts/:postId', (req, res) => {
-    let postId;
-    try {
-          postId = new ObjectID(req.params.postId);
-    } catch (e ) {
-          return res.status(400).send('bad request 400');
-    }
-    db.collection('posts').findOneAndDelete({"_id": postId}, (err, data) =>{
-      if(err){
-        res.send("error finding data");
-      } else {
-        res.send(data.value);
+
+    router.posts.remove(db, req.params.postId, (err, data) => {
+      if(err) {
+        res.status(400).send();
       }
+      res.send({
+        message:'post delted',
+        data: data.value
+      });
     })
   })
+
+  // PUT /posts/:postId
   app.put('/posts/:postId', (req, res) => {
-    let updatedPost = {}
-    if(req.body.name) {
-      updatedPost.name = req.body.name;
-    }
-
-    if(req.body.text) {
-      updatedPost.text = req.body.text;
-    }
-
-    let postId;
-    try {
-      postId = new ObjectID(req.params.postId);
-    } catch (e ) {
-      return res.status(400).send('bad request 400');
-    }
-    // db.collection('posts').findOneAndUpdate({"_id": postId},{...updatedPost},(err, data) =>{
-    db.collection('posts').findOneAndUpdate({"_id": postId},
-      {$set: {...updatedPost}}, (err, data) =>{
+    router.posts.update(db, req.params.postId, req.body, (err, data) => {
       if(err){
-        res.send("error finding data");
+        res.status(400).send();
       } else {
-        res.send(data.value);
+        res.send(data);
       }
-    })
+    });
   })
 
   // GET /posts/:postId/comments
   app.get('/posts/:postId/comments', (req, res) => {
     let postId;
     try {
-          postId = new ObjectID(req.params.postId);
+      postId = new ObjectID(req.params.postId);
     } catch (e ) {
-          return res.status(400).send('bad request 400');
+      return res.status(400).send('bad request 400');
     }
 
     router.posts.find_post_by_id(
@@ -121,6 +103,22 @@ MongoClient.connect(mongodb_url, (err, client) => {
       }
     });
   });
+
+  // GET /posts/:postId/comments/:commentId
+  app.get('/posts/:postId/comments/:commentId', (req, res) => {
+    router.comments.get_comment_by_id(
+      db,
+      req.params.postId,
+      req.params.commentId,
+      (err, data) => {
+        if (err) {
+          return res.status(400).send()
+        }
+
+        res.send(data);
+      }
+    );
+  })
 })
 
 app.listen(3000, (err) => {

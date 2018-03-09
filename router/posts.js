@@ -43,7 +43,52 @@ let find_post_by_id = (db, id, proj, callback) => {
   });
 }
 
+let remove = (db, id, callback) => {
+  let post_id;
+  try {
+    post_id = new ObjectID(id);
+  } catch(e) {
+    return callback(e);
+  }
+  db.collection('posts').findOneAndDelete({"_id": post_id}, (err, data) =>{
+    if(err) {
+      return callback(err);
+    } else {
+      callback(null, data);
+    }
+  });
+}
+
+let update = (db, id, update, callback) => {
+  let updatedPost = {}
+  if(update.name) {
+    updatedPost.name = update.name;
+  }
+
+  if(update.text) {
+    updatedPost.text = update.text;
+  }
+
+  let postId;
+  try {
+    postId = new ObjectID(id);
+  } catch (e ) {
+    return callback('error');
+  }
+  // db.collection('posts').findOneAndUpdate({"_id": postId},{...updatedPost},(err, data) =>{
+  db.collection('posts').findOneAndUpdate({"_id": postId},
+    {$set: {...updatedPost}}, (err, data) =>{
+    if(err){
+      callback('error');
+    } else {
+      callback(null, data.value);
+    }
+  })
+}
+
 module.exports = {
-  find_all_posts,
-  find_post_by_id
+  find_all_posts ,
+  find_post_by_id ,
+  remove,
+  update
 }
