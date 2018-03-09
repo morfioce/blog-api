@@ -15,8 +15,18 @@ let get_comment_by_id = (db, post_id, comment_id, callback) => {
       }
 
       callback(null, data);
-  });
+    }
+  );
 }
+
+// POST /posts/:postId/comments
+// --> findOneAndUpdate({}, {$push})
+
+// PUT /posts/:postId/comments/:commentId
+// --> findOneAndUpdate({}, {$?})
+
+// DELETE /posts/:postId/comments/:commentId
+// --> findOneAndUpdate({}, {$pull})
 
 module.exports = {
   get_comment_by_id
