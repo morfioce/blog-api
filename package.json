@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "npm run populate-db && nodemon server.js",
     "populate-db": "node scripts/test-data.js"
   },
   "keywords": [],
@@ -13,5 +14,8 @@
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "mongodb": "^3.0.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.1"
   }
 }
