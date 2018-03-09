@@ -1,8 +1,13 @@
+// require core module
 const assert = require('assert');
 
+// Require 3-third party packages
 const {MongoClient, ObjectID} = require('mongodb');
 const express = require('express');
 const body_parser = require('body-parser');
+
+// require my modules
+const router = require('./router/index.js');
 
 const mongodb_url = 'mongodb://localhost:27017';
 const database = 'blog-app';
@@ -15,27 +20,9 @@ MongoClient.connect(mongodb_url, (err, client) => {
 
   const db = client.db(database);
 
-  let find_all_posts = (db, callback) => {
-    db.collection('posts').find().toArray((err, data) => {
-        if (err) {
-          return callback(err)
-        }
-        callback(null, data);
-      });
-  }
-
-  let find_post_by_id = (db, id, callback) => {
-    db.collection('posts').findOne({_id: id}, {projection: {comments: 1}}, (err, data) => {
-      if (err) {
-        return callback(err)
-      }
-      console.log(data.comments)
-      callback(null, data);
-    });
-  }
   // GET /posts
   app.get('/posts', (req, res) => {
-    find_all_posts(db, (err, result) =>{
+    router.posts.find_all_posts(db, (err, result) =>{
       if (err) {
         res.status(400).send();
       } else {
@@ -46,35 +33,31 @@ MongoClient.connect(mongodb_url, (err, client) => {
 
   // GET /posts/:postId
   app.get('/posts/:postId', (req, res) => {
-    let post_id = new ObjectID(req.params.postId);
-    // res.send('route is working');
-    db.collection('posts').findOne({"_id": post_id}, (err, data) => {
-      if (err) {
-        return res.status(500).send();
-      }
-      // console.log(data)
-      res.send(data);
-    });
+    router.posts.find_post_by_id(
+      db,
+      req.params.postId,
+      {},
+      (err, data) => {
+        console.log(data)
+        if (err) {
+          return res.status(400).send();
+        }
+        // console.log(data)
+        res.send(data);
+      });
   });
 
   // POST /posts
   app.post('/posts', (req, res) => {
-    let post = req.body;
-    if (!post.name || !post.text) {
-      return res.status(400).send()
-    }
-
-    db.collection('posts').insertOne({
-      name: post.name,
-      text: post.text,
-      url : null,
-      comments: []
-    }, (err) => {
-      assert.equal(null, err);
-      res.send('post added');
+    router.posts.create(req.body, (err) => {
+      if (err) {
+        res.status(400).send();
+      }
+      res.send('post created');
     })
   });
 
+  // DELETE /posts/:postId
   app.delete('/posts/:postId', (req, res) => {
     let postId;
     try {
@@ -126,11 +109,15 @@ MongoClient.connect(mongodb_url, (err, client) => {
           return res.status(400).send('bad request 400');
     }
 
-    find_post_by_id(db, postId,(err, result) =>{
-      if (err) {
-        res.status(400).send();
-      } else {
-        res.send(result);
+    router.posts.find_post_by_id(
+      db,
+      postId,
+      {comments: 1},
+      (err, result) =>{
+        if (err) {
+          res.status(400).send();
+        } else {
+          res.send(result);
       }
     });
   });
