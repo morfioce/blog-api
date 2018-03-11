@@ -118,10 +118,73 @@ MongoClient.connect(mongodb_url, (err, client) => {
         res.send(data);
       }
     );
-  })
-})
+  });
+
+  // POST /posts/:postId/comments
+  app.post('/posts/:postId/comments/', (req, res) => {
+    if (!req.body.text) {
+      return res.status(400).send();
+    }
+
+    let body = {
+      _id: new ObjectID(),
+      text: req.body.text
+    };
+
+    router.comments.create(
+      db,
+      req.params.postId,
+      body,
+      (err, data) => {
+        if (err) {
+          return res.status(400).send()
+        }
+
+        res.send(data);
+      }
+    );
+  });
+
+  // PUT /posts/:postId/comments/:commentId
+  app.put('/posts/:postId/comments/:commentId', (req, res) => {
+    if (!req.body.text) {
+      return res.status(400).send();
+    }
+
+    router.comments.update(
+      db,
+      req.params.postId,
+      req.params.commentId,
+      req.body.text,
+      (err, data) => {
+        if (err) {
+          return res.status(400).send()
+        }
+
+        res.send(data);
+      }
+    );
+  });
+
+  // DELETE /posts/:postId/comments/:commentId
+  app.delete('/posts/:postId/comments/:commentId', (req, res) => {
+    router.comments.remove(
+      db,
+      req.params.postId,
+      req.params.commentId,
+      (err, data) => {
+        if (err) {
+          return res.status(400).send()
+        }
+
+        res.send(data);
+      }
+    );
+  });
+
+});
 
 app.listen(3000, (err) => {
   assert.equal(err, null);
-  console.log('Server is up and running at port 3000')
-})
+  console.log('Server is up and running at port 3000');
+});
