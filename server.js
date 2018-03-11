@@ -182,9 +182,14 @@ MongoClient.connect(mongodb_url, (err, client) => {
     );
   });
 
+  app.get('/', (req, res) => {
+    res.send('hello world');
+  });
 });
 
 app.listen(3000, (err) => {
   assert.equal(err, null);
   console.log('Server is up and running at port 3000');
 });
+
+module.exports = {app};

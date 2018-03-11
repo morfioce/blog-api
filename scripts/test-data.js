@@ -29,17 +29,25 @@ const data = [
   {name: "buying", text:"buying many books", url: null, comments: []}
 ];
 
-MongoClient.connect(mongodb_url, (err, client) => {
-  assert.equal(null, err);
+let populate_db = (callback) => {
+  MongoClient.connect(mongodb_url, (err, client) => {
+    assert.equal(null, err);
 
-  const db = client.db(database);
-  db.collection('posts')
-    .remove((err) => {
-      assert.equal(null, err);
-      db.collection('posts').insertMany(data, (err, result) => {
+    const db = client.db(database);
+    db.collection('posts')
+      .remove((err) => {
         assert.equal(null, err);
-        console.log(result);
-        client.close();
+        db.collection('posts').insertMany(data, (err, result) => {
+          assert.equal(null, err);
+          // console.log(result);
+          if (typeof callback === 'function') {
+            callback();
+          }
+          client.close();
+        })
       })
-    })
-})
+  });
+}
+
+populate_db();
+module.exports = {populate_db, data};

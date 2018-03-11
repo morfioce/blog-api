@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test": "mocha server.test.js",
     "start": "npm run populate-db && nodemon server.js",
     "populate-db": "node scripts/test-data.js"
   },
@@ -16,6 +17,9 @@
     "mongodb": "^3.0.4"
   },
   "devDependencies": {
-    "nodemon": "^1.17.1"
+    "expect": "^22.4.0",
+    "mocha": "^5.0.4",
+    "nodemon": "^1.17.1",
+    "supertest": "^3.0.0"
   }
 }
