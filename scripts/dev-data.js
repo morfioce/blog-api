@@ -33,13 +33,14 @@ MongoClient.connect(mongodb_url, (err, client) => {
   assert.equal(null, err);
 
   const db = client.db(database);
-  db.collection('posts')
-    .remove((err) => {
+  db.collection('posts').remove((err) => {
+    // This code is exectued once the remove is completed
+    assert.equal(null, err);
+    db.collection('posts').insertMany(data, (err, result) => {
+      // This code exectued once the insertMany is completed
       assert.equal(null, err);
-      db.collection('posts').insertMany(data, (err, result) => {
-        assert.equal(null, err);
-        console.log(result);
-        client.close();
-      })
+      console.log(result);
+      client.close();
     })
+  })
 })

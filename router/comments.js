@@ -19,15 +19,74 @@ let get_comment_by_id = (db, post_id, comment_id, callback) => {
   );
 }
 
+
 // POST /posts/:postId/comments
-// --> findOneAndUpdate({}, {$push})
+// findOneAndUpdate({}, {$push})
+// https://docs.mongodb.com/manual/reference/operator/update/push/#append-a-value-to-an-array
+let create = (db, postId, comment , callback) =>{
+  let post_id;
+  let comment_id;
+  try {
+    post_id = new ObjectID(postId);
+    comment_id = new ObjectID()
+  } catch (e) {
+    callback('error');
+  }
+
+
+  db.collection('posts').findOneAndUpdate(
+     {_id : new ObjectID(postId)},
+     {$push :{comments : {_id: comment_id, text: comment} }},
+     callback
+  )
+}
+
 
 // PUT /posts/:postId/comments/:commentId
-// --> findOneAndUpdate({}, {$?})
+// findOneAndUpdate({}, {$?})
+// https://docs.mongodb.com/manual/reference/operator/update/positional/#update-documents-in-an-array
+let update = (db, postId, commentId, commentText, callback) =>{
+  let post_id;
+  let comment_id;
+  try {
+    post_id = new ObjectID(postId);
+    comment_id = new ObjectID(commentId)
+  } catch (e) {
+    callback('error');
+  }
+
+
+  db.collection('posts').findOneAndUpdate(
+    {_id : post_id, "comments._id": comment_id},
+    {$set :{"comments.$.text" : commentText}},
+    callback
+  )
+}
 
 // DELETE /posts/:postId/comments/:commentId
-// --> findOneAndUpdate({}, {$pull})
+// findOneAndUpdate({}, {$pull})
+// https://docs.mongodb.com/manual/reference/operator/update/pull/#remove-items-from-an-array-of-documents
+let remove = (db, postId, commentId , callback) =>{
+  let post_id;
+  let comment_id;
+  try {
+    post_id = new ObjectID(postId);
+    comment_id = new ObjectID(commentId)
+  } catch (e) {
+    callback('error');
+  }
+
+
+  db.collection('posts').findOneAndUpdate(
+    {_id : post_id},
+    {$pull :{comments : {_id: comment_id} }},
+    callback
+  )
+}
 
 module.exports = {
-  get_comment_by_id
+  get_comment_by_id,
+  create,
+  update,
+  remove
 }
