@@ -6,9 +6,9 @@
 </head>
 <body>
 	<h1>Blog list</h1>
-	{{#each posts as |post postId|}}
+	{{#each posts as |post i|}}
 		<li>
-			{{postId}} --  <a href="#">{{post.text}}</a>
+			{{i}}--  <a href="/blog/{{post._id}}">{{post.text}}</a>
 			<a href="">Edit</a> | <a href="">Remove</a>
 		</li>
 	{{/each}}

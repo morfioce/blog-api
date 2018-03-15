@@ -36,10 +36,15 @@ app.get('/blogs', middelware.authenticate, (req, res) => {
   })
 })
 
-// app.get('/blogs/:postId', (req, res) => {
-//   // TO DO
-//   res.render('blog.hbs', {"post": post})
-// })
+app.get('/blog/:postId', (req, res) => {
+  router.posts.find_post_by_id(req.params.postId, {}, (err, post) => {
+    if (err) {
+      res.render('error.hbs', {status: 404, reason:"post id not found"});
+    } else {
+      res.render('blog.hbs', {"post": post});
+    }
+  });
+});
 
 // -------- APPLICATION API --------
 
