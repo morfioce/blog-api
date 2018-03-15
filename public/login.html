@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>login</title>
+	<link rel="stylesheet" type="text/css" href="/css/style.css">
+	<style type="text/css">
+		label {
+			font-size: 23px;
+			display: inline-block;
+			width: 150px;
+		}
+
+		input {
+			font-size: 18px;
+			width: 220px;
+		}
+
+		button {
+			padding: 7px;
+			width: 100px;
+			font-size: 28px;
+		}
+	</style>
+</head>
+<body>
+	<header>
+		<h1>Welcome to my blog</h1>
+	</header>
+
+	<main>
+		<section>
+			<form>
+				<label>email</label>
+				<input class="email" type="text" name="email">
+				<br>
+				<label>password</label>
+				<input class="password" type="password" name="email">
+				<br>
+				<button onclick="logIn(); return false">Login</button>
+			</form>
+		</section>
+	</main>
+
+	<script type="text/javascript">
+		let url = 'http://localhost:3000/users/login';
+
+		let logIn = () => {
+			let email = document.querySelector(".email");
+			let password = document.querySelector(".password");
+			let data = {
+				email: email.value,
+				password: password.value
+			};
+
+			fetch(url, {
+			    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+			    body: JSON.stringify(data), // must match 'Content-Type' header
+			    headers: new Headers({
+				  'Content-Type': 'application/json'
+				})
+			  })
+			  .then(response => {
+			  		if (response.status === 200) {
+			  			//Save data on the browser as {key: value}
+			  			let token = response.headers.get('x-auth')
+			  			// window.localStorage.setItem(
+			  			// 	'token',
+			  			// 	token
+			  			// );
+			  			document.cookie = 'token=' + token;
+			  			location.replace('/blogs');
+			  			return response.json()
+			  		}
+			  }) // parses response to JSON
+			  .catch(error => console.error('Error:', error));
+		}
+	</script>
+</body>
+</html>

@@ -1,4 +1,12 @@
+const assert = require('assert');
 const {ObjectID} = require('mongodb');
+const database = require('../db/db.js')
+
+let db;
+database.getDB((err, dbConnection) => {
+  assert.equal(null, err);
+  db = dbConnection;
+});
 
 let create = (post, callback) => {
   if (!post.name || !post.text) {
@@ -19,7 +27,7 @@ let create = (post, callback) => {
   });
 }
 
-let find_all_posts = (db, callback) => {
+let find_all_posts = (callback) => {
   db.collection('posts').find().toArray((err, data) => {
       if (err) {
         return callback(err)
@@ -28,7 +36,7 @@ let find_all_posts = (db, callback) => {
     });
 }
 
-let find_post_by_id = (db, id, proj, callback) => {
+let find_post_by_id = (id, proj, callback) => {
   let post_id;
   try {
     post_id = new ObjectID(id);
@@ -43,7 +51,7 @@ let find_post_by_id = (db, id, proj, callback) => {
   });
 }
 
-let remove = (db, id, callback) => {
+let remove = (id, callback) => {
   let post_id;
   try {
     post_id = new ObjectID(id);
@@ -59,7 +67,7 @@ let remove = (db, id, callback) => {
   });
 }
 
-let update = (db, id, update, callback) => {
+let update = (id, update, callback) => {
   let updatedPost = {}
   if(update.name) {
     updatedPost.name = update.name;

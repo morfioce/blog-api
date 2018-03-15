@@ -1,7 +1,16 @@
+const assert = require('assert');
 const {ObjectID} = require('mongodb');
 const posts = require('./posts.js');
 
-let get_comment_by_id = (db, post_id, comment_id, callback) => {
+const database = require('../db/db.js')
+
+let db;
+database.getDB((err, dbConnection) => {
+  assert.equal(null, err);
+  db = dbConnection;
+});
+
+let get_comment_by_id = (post_id, comment_id, callback) => {
   let commentId = new ObjectID(comment_id);
   // let postId = new ObjectID(post_id);
 
@@ -23,7 +32,7 @@ let get_comment_by_id = (db, post_id, comment_id, callback) => {
 // POST /posts/:postId/comments
 // findOneAndUpdate({}, {$push})
 // https://docs.mongodb.com/manual/reference/operator/update/push/#append-a-value-to-an-array
-let create = (db, postId, comment , callback) =>{
+let create = (postId, comment , callback) =>{
   let post_id;
   let comment_id;
   try {
@@ -45,7 +54,7 @@ let create = (db, postId, comment , callback) =>{
 // PUT /posts/:postId/comments/:commentId
 // findOneAndUpdate({}, {$?})
 // https://docs.mongodb.com/manual/reference/operator/update/positional/#update-documents-in-an-array
-let update = (db, postId, commentId, commentText, callback) =>{
+let update = (postId, commentId, commentText, callback) =>{
   let post_id;
   let comment_id;
   try {
@@ -66,7 +75,7 @@ let update = (db, postId, commentId, commentText, callback) =>{
 // DELETE /posts/:postId/comments/:commentId
 // findOneAndUpdate({}, {$pull})
 // https://docs.mongodb.com/manual/reference/operator/update/pull/#remove-items-from-an-array-of-documents
-let remove = (db, postId, commentId , callback) =>{
+let remove = (postId, commentId , callback) =>{
   let post_id;
   let comment_id;
   try {
