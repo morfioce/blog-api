@@ -12,7 +12,7 @@ const router = require('./router/index.js');
 const middelware = require('./middelware/index.js');
 
 const app = express();
-
+const port = process.env.PORT || 3000;
 // Configure the template engine
 app.set('view engine', 'hbs');
 
@@ -233,7 +233,7 @@ app.put('/posts/:postId/comments/:commentId', (req, res) => {
   )
 });
 
-app.listen(3000, (err) => {
+app.listen(port, (err) => {
   assert.equal(err, null);
-  console.log('Server is up and running at port 3000')
+  console.log(`Server is up and running at port ${port}`)
 })

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run populate-db && nodemon server.js -e js,hbs",
+    "start":"node server.js",
+    "start-watch": "npm run populate-db && nodemon server.js -e js,hbs",
     "populate-db": "node scripts/dev-data.js"
   },
   "keywords": [],
