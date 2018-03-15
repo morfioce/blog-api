@@ -68,6 +68,16 @@ app.post('/edit/blog/:postId', middelware.authenticate, (req, res) => {
   });
 });
 
+app.get('/remove/blog/:postId', middelware.authenticate, (req, res) => {
+  router.posts.find_post_by_id(req.params.postId, {}, (err, post) => {
+    if (err) {
+      res.render('error.hbs', {status: 404, reason:"post id not found"});
+    } else {
+      res.render('remove-blog.hbs', {"post": post});
+    }
+  });
+});
+
 // -------- APPLICATION API --------
 
 // POST /users/signup

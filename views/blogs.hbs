@@ -3,13 +3,22 @@
 <head>
 	<title>blogs</title>
 	<link rel="stylesheet" href="/css/style.css">
+	<style type="text/css">
+		.blog-post {
+			display: inline-block;
+			width: 50%;
+		}
+	</style>
 </head>
 <body>
 	<h1>Blog list</h1>
 	{{#each posts as |post i|}}
 		<li>
-			{{i}}--  <a href="/blog/{{post._id}}">{{post.name}}</a>
-			<a href="/edit/blog/{{post._id}}">Edit</a> | <a href="">Remove</a>
+			<span class="blog-post">
+				{{i}} --
+				<a href="/blog/{{post._id}}">{{post.name}}</a>
+			</span>
+			<a href="/edit/blog/{{post._id}}">Edit</a> | <a href="/remove/blog/{{post._id}}">Remove</a>
 		</li>
 	{{/each}}
 </body>
