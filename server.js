@@ -21,6 +21,8 @@ app.use(express.static('public/'));
 
 // Body parser middelware
 app.use(body_parser.json());
+// parse application/x-www-form-urlencoded
+app.use(body_parser.urlencoded({ extended: false }))
 app.use(cookie_parser());
 
 // Logger middelware
@@ -36,12 +38,32 @@ app.get('/blogs', middelware.authenticate, (req, res) => {
   })
 })
 
-app.get('/blog/:postId', (req, res) => {
+app.get('/blog/:postId', middelware.authenticate, (req, res) => {
   router.posts.find_post_by_id(req.params.postId, {}, (err, post) => {
     if (err) {
       res.render('error.hbs', {status: 404, reason:"post id not found"});
     } else {
       res.render('blog.hbs', {"post": post});
+    }
+  });
+});
+
+app.get('/edit/blog/:postId', middelware.authenticate, (req, res) => {
+  router.posts.find_post_by_id(req.params.postId, {}, (err, post) => {
+    if (err) {
+      res.render('error.hbs', {status: 404, reason:"post id not found"});
+    } else {
+      res.render('edit-blog.hbs', {"post": post});
+    }
+  });
+});
+
+app.post('/edit/blog/:postId', middelware.authenticate, (req, res) => {
+  router.posts.update(req.params.postId, req.body, (err, post) => {
+    if (err) {
+      res.render('error.hbs', {status: 404, reason:"post id not found"});
+    } else {
+      res.redirect('/blogs');
     }
   });
 });

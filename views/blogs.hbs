@@ -8,8 +8,8 @@
 	<h1>Blog list</h1>
 	{{#each posts as |post i|}}
 		<li>
-			{{i}}--  <a href="/blog/{{post._id}}">{{post.text}}</a>
-			<a href="">Edit</a> | <a href="">Remove</a>
+			{{i}}--  <a href="/blog/{{post._id}}">{{post.name}}</a>
+			<a href="/edit/blog/{{post._id}}">Edit</a> | <a href="">Remove</a>
 		</li>
 	{{/each}}
 </body>

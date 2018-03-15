@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>blogs</title>
+	<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+	<h1>Blog list</h1>
+	<hr>
+	<form 
+		method="post" 
+		action="/edit/blog/{{post._id}}">
+		<h2><label>Name</label></h2>
+		<input type="text" name="name" value="{{post.name}}">
+
+		<h2><label>Text</label></h2>
+		<textarea name="text">{{post.text}}</textarea>
+
+		<br>
+		<button>Save changes</button>
+	</form>
+</body>
+</html>
